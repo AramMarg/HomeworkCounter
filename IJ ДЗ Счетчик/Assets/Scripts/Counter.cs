@@ -1,44 +1,57 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
 public class Counter : MonoBehaviour
 {
+    public event Action<int> TextRunning;
+
+    private Coroutine _coroutine;
+
+    [SerializeField] private UserInputter _userInputter;
+
     private float _delay = 0.5f;
     private bool _canRun = false;
+    private int _count;
 
-    private void Start()
+    private void OnEnable()
     {
-        StartCoroutine(CountUp(_delay));
+        _userInputter.MouseButtonClicked += Run;
+    }
+
+    private void OnDisable()
+    {
+        _userInputter.MouseButtonClicked -= Run;
+    }
+
+    private void Run()
+    {
+        _canRun = !_canRun;
+
+        if (_canRun)
+        {
+            _coroutine = StartCoroutine(CountUp(_delay));
+        }
+        else
+        {
+            if (_coroutine != null)
+            {
+                StopCoroutine(_coroutine);
+            }
+        }
     }
 
     private IEnumerator CountUp(float delay)
     {
         WaitForSeconds wait = new(delay);
-        WaitUntil condition = new(() => _canRun);
 
-        for (int i = 0; ; i++)
+        while (enabled)
         {
-            DisplayCountUp(i);
+            TextRunning?.Invoke(_count);
 
-            yield return condition;
+            _count++;
+
             yield return wait;
         }
-
-        //while (enabled)
-        //{
-
-        //}
-    }
-
-    //private void CheckMouseClick()
-    //{
-    //    if (_canRun)
-    //        _canRun = false;
-    //    else
-    //        _canRun = true;
-    //}
-
-    private void DisplayCountUp(int count)
-    {
-    }
+    }    
 }

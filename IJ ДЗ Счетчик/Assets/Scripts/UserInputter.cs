@@ -1,11 +1,15 @@
+using System;
 using UnityEngine;
 
 public class UserInputter : MonoBehaviour
 {
-    private void OnMouseUpAsButton()
+    public event Action MouseButtonClicked;
+
+    private void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
+            MouseButtonClicked?.Invoke();
         }
     }
 }

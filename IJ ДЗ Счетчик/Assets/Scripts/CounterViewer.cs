@@ -5,5 +5,25 @@ public class CounterViewer : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _text;
 
-    private Counter _counter;
+    [SerializeField] private Counter _counter;
+
+    private void OnEnable()
+    {
+        _counter.TextRunning += Display;
+    }
+
+    private void OnDisable()
+    {
+        _counter.TextRunning -= Display;
+    }
+
+    private void Start()
+    {
+        _text.text = "0";
+    }
+
+    private void Display(int count)
+    {
+        _text.text = count.ToString();
+    }
 }
